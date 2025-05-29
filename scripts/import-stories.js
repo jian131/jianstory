@@ -5,14 +5,20 @@ const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { v2: cloudinary } = require('cloudinary');
 
-// Load environment variables
-require('dotenv').config({ path: '.env.local' });
+// Load environment variables from project root
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
 
 // Configure Supabase
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+
+// Debug: Check if environment variables are loaded
+console.log('🔧 Environment Variables Check:');
+console.log('  SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅ Loaded' : '❌ Missing');
+console.log('  SERVICE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? '✅ Loaded' : '❌ Missing');
+console.log('  CLOUDINARY_CLOUD_NAME:', process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ? '✅ Loaded' : '❌ Missing');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -22,12 +28,35 @@ cloudinary.config({
 });
 
 function slugify(text) {
+  if (!text || typeof text !== 'string') {
+    return 'unknown';
+  }
+
   return text
     .toLowerCase()
     .trim()
+    // Remove Vietnamese diacritics
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    // Replace special characters
     .replace(/[^\w\s-]/g, '')
+    // Replace spaces and underscores with hyphens
     .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    // Remove leading/trailing hyphens
+    .replace(/^-+|-+$/g, '')
+    // Limit length
+    .substring(0, 50);
+}
+
+function createUniqueChapterSlug(title, chapterNumber, storySlug) {
+  const baseSlug = slugify(title);
+
+  // If title is empty or results in empty slug, use chapter number
+  if (!baseSlug || baseSlug === 'unknown') {
+    return `${storySlug}-chuong-${chapterNumber}`;
+  }
+
+  // Create unique slug with chapter number
+  return `${baseSlug}-${chapterNumber}`;
 }
 
 async function uploadImageToCloudinary(imagePath, publicId) {
@@ -157,7 +186,7 @@ async function importStory(storyDir) {
 
       for (let i = 0; i < storyInfo.chapters.length; i++) {
         const chapter = storyInfo.chapters[i];
-        const chapterSlug = slugify(chapter.title);
+        const chapterSlug = createUniqueChapterSlug(chapter.title, i + 1, storySlug);
 
         // Calculate word count
         const wordCount = chapter.content ? chapter.content.split(/\s+/).length : 0;

@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Custom project folders
+/scripts
+/stories
+
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

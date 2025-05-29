@@ -3,7 +3,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ReadingSettings from '@/components/ReadingSettings'
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
+import {
+  AdjustmentsHorizontalIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  BookOpenIcon,
+  CalendarIcon,
+  ClockIcon
+} from '@heroicons/react/24/outline'
 import { type ReadingSettings as ReadingSettingsType } from '@/types/reading'
 
 interface Chapter {
@@ -33,7 +40,7 @@ const defaultSettings: ReadingSettingsType = {
   fontSize: 18,
   fontFamily: 'Georgia, serif',
   lineHeight: 1.8,
-  background: '#1f2937',
+  background: '#111827',
   textColor: '#f9fafb',
   theme: 'dark'
 }
@@ -45,7 +52,7 @@ function formatDate(dateString: string): string {
 function formatReadingTime(wordCount: number): string {
   const wordsPerMinute = 200
   const minutes = Math.ceil(wordCount / wordsPerMinute)
-  return `${minutes} phút đọc`
+  return `${minutes} phút`
 }
 
 export default function ChapterReader({ chapter, prevChapter, nextChapter }: ChapterReaderProps) {
@@ -74,115 +81,135 @@ export default function ChapterReader({ chapter, prevChapter, nextChapter }: Cha
   return (
     <div style={{ backgroundColor: settings.background, minHeight: '100vh', transition: 'background-color 0.3s ease' }}>
       <main className="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+
         {/* Breadcrumb */}
-        <nav className="mb-6">
-          <ol
-            className="flex items-center space-x-2 text-sm opacity-70"
-            style={{ color: settings.textColor }}
-          >
-            <li><Link href="/" className="hover:text-blue-400 transition-colors">Trang chủ</Link></li>
+        <nav className="mb-8">
+          <ol className="flex items-center space-x-2 text-sm" style={{ color: settings.textColor + '70' }}>
+            <li>
+              <Link href="/" className="hover:text-blue-400 transition-colors">
+                Trang chủ
+              </Link>
+            </li>
             <li>/</li>
-            <li><Link href={`/stories/${chapter.story.slug}`} className="hover:text-blue-400 transition-colors">{chapter.story.title}</Link></li>
+            <li>
+              <Link href={`/stories/${chapter.story.slug}`} className="hover:text-blue-400 transition-colors">
+                {chapter.story.title}
+              </Link>
+            </li>
             <li>/</li>
-            <li className="opacity-100">Chương {chapter.chapter_number}</li>
+            <li style={{ color: settings.textColor }}>
+              Chương {chapter.chapter_number}
+            </li>
           </ol>
         </nav>
 
-        {/* Navigation */}
-        <nav className="flex items-center justify-between mb-6">
-          <div>
-            {prevChapter ? (
-              <Link
-                href={`/stories/${chapter.story.slug}/chapters/${prevChapter.slug}`}
-                className="inline-flex items-center px-4 py-2 rounded-lg border transition-all hover:scale-105"
-                style={{
-                  borderColor: settings.textColor + '30',
-                  color: settings.textColor,
-                  backgroundColor: settings.background
-                }}
-              >
-                ← Chương {prevChapter.chapter_number}
-              </Link>
-            ) : (
-              <div></div>
-            )}
-          </div>
-
-          <div className="text-center">
+        {/* Top Navigation */}
+        <div className="flex items-center justify-between mb-8 gap-4">
+          {prevChapter ? (
             <Link
-              href={`/stories/${chapter.story.slug}`}
-              className="inline-flex items-center px-4 py-2 rounded-lg border transition-all hover:scale-105"
+              href={`/stories/${chapter.story.slug}/chapters/${prevChapter.slug}`}
+              className="flex items-center gap-2 px-4 py-3 rounded-xl border transition-all duration-200 hover:scale-105 group"
               style={{
                 borderColor: settings.textColor + '30',
                 color: settings.textColor,
-                backgroundColor: settings.background
+                backgroundColor: settings.textColor + '05'
               }}
             >
-              📚 Về trang truyện
+              <ChevronLeftIcon className="w-4 h-4 group-hover:text-blue-400" />
+              <span className="font-medium">Chương {prevChapter.chapter_number}</span>
             </Link>
-          </div>
+          ) : (
+            <div></div>
+          )}
 
-          <div>
-            {nextChapter ? (
-              <Link
-                href={`/stories/${chapter.story.slug}/chapters/${nextChapter.slug}`}
-                className="inline-flex items-center px-4 py-2 rounded-lg border transition-all hover:scale-105"
-                style={{
-                  borderColor: settings.textColor + '30',
-                  color: settings.textColor,
-                  backgroundColor: settings.background
-                }}
-              >
-                Chương {nextChapter.chapter_number} →
-              </Link>
-            ) : (
-              <div></div>
-            )}
-          </div>
-        </nav>
+          <Link
+            href={`/stories/${chapter.story.slug}`}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl border transition-all duration-200 hover:scale-105 group"
+            style={{
+              borderColor: settings.textColor + '30',
+              color: settings.textColor,
+              backgroundColor: settings.textColor + '05'
+            }}
+          >
+            <BookOpenIcon className="w-4 h-4 group-hover:text-blue-400" />
+            <span className="font-medium">Về trang truyện</span>
+          </Link>
+
+          {nextChapter ? (
+            <Link
+              href={`/stories/${chapter.story.slug}/chapters/${nextChapter.slug}`}
+              className="flex items-center gap-2 px-4 py-3 rounded-xl border transition-all duration-200 hover:scale-105 group"
+              style={{
+                borderColor: settings.textColor + '30',
+                color: settings.textColor,
+                backgroundColor: settings.textColor + '05'
+              }}
+            >
+              <span className="font-medium">Chương {nextChapter.chapter_number}</span>
+              <ChevronRightIcon className="w-4 h-4 group-hover:text-blue-400" />
+            </Link>
+          ) : (
+            <div></div>
+          )}
+        </div>
 
         {/* Chapter Content */}
         <article
-          className="rounded-xl shadow-2xl overflow-hidden border"
+          className="rounded-2xl shadow-2xl overflow-hidden border"
           style={{
-            backgroundColor: settings.background,
+            backgroundColor: settings.textColor + '05',
             borderColor: settings.textColor + '20'
           }}
         >
+          {/* Header */}
           <header
-            className="px-6 py-6 border-b"
+            className="px-8 py-8 border-b"
             style={{
-              backgroundColor: settings.textColor + '05',
-              borderColor: settings.textColor + '20'
+              backgroundColor: settings.textColor + '03',
+              borderColor: settings.textColor + '15'
             }}
           >
-            <h1
-              className="text-2xl font-bold mb-2"
-              style={{ color: settings.textColor }}
-            >
-              {chapter.story.title}
-            </h1>
-            <h2
-              className="text-xl mb-3"
-              style={{ color: settings.textColor, opacity: 0.8 }}
-            >
-              Chương {chapter.chapter_number}: {chapter.title}
-            </h2>
-            <div
-              className="flex items-center text-sm flex-wrap gap-4"
-              style={{ color: settings.textColor, opacity: 0.6 }}
-            >
-              <span>Tác giả: <span className="text-blue-400">{chapter.story.author}</span></span>
-              <span>•</span>
-              <span>{chapter.word_count || 0} từ</span>
-              <span>•</span>
-              <span>{formatReadingTime(chapter.word_count)}</span>
-              <span>•</span>
-              <span>{formatDate(chapter.created_at)}</span>
+            <div className="text-center space-y-4">
+              <h1
+                className="text-3xl font-bold"
+                style={{ color: settings.textColor }}
+              >
+                {chapter.story.title}
+              </h1>
+
+              <h2
+                className="text-xl font-semibold"
+                style={{ color: settings.textColor, opacity: 0.9 }}
+              >
+                Chương {chapter.chapter_number}: {chapter.title}
+              </h2>
+
+              <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
+                <div className="flex items-center gap-2" style={{ color: settings.textColor, opacity: 0.7 }}>
+                  <span>Tác giả:</span>
+                  <span className="text-blue-400 font-medium">{chapter.story.author}</span>
+                </div>
+
+                <div className="flex items-center gap-2" style={{ color: settings.textColor, opacity: 0.7 }}>
+                  <BookOpenIcon className="w-4 h-4" />
+                  <span>{chapter.word_count || 0} từ</span>
+                </div>
+
+                <div className="flex items-center gap-2" style={{ color: settings.textColor, opacity: 0.7 }}>
+                  <ClockIcon className="w-4 h-4" />
+                  <span>{formatReadingTime(chapter.word_count)}</span>
+                </div>
+
+                <div className="flex items-center gap-2" style={{ color: settings.textColor, opacity: 0.7 }}>
+                  <CalendarIcon className="w-4 h-4" />
+                  <span>{formatDate(chapter.created_at)}</span>
+                </div>
+              </div>
             </div>
           </header>
 
-          <div className="px-6 py-8 lg:px-12 lg:py-12">
+          {/* Content */}
+          <div className="px-8 py-12 lg:px-16 lg:py-16">
             <div
               className="prose prose-lg max-w-none"
               style={{
@@ -195,11 +222,11 @@ export default function ChapterReader({ chapter, prevChapter, nextChapter }: Cha
               <div className="whitespace-pre-line">
                 {chapter.content.split('\n').map((paragraph, index) => (
                   paragraph.trim() ? (
-                    <p key={index} className="mb-6 text-justify">
+                    <p key={index} className="mb-6 text-justify leading-relaxed">
                       {paragraph}
                     </p>
                   ) : (
-                    <br key={index} />
+                    <div key={index} className="mb-4"></div>
                   )
                 ))}
               </div>
@@ -207,62 +234,50 @@ export default function ChapterReader({ chapter, prevChapter, nextChapter }: Cha
           </div>
         </article>
 
-        {/* Bottom navigation */}
-        <nav className="flex items-center justify-between mt-8">
-          <div>
-            {prevChapter ? (
-              <Link
-                href={`/stories/${chapter.story.slug}/chapters/${prevChapter.slug}`}
-                className="inline-flex items-center px-6 py-3 rounded-lg transition-all hover:scale-105"
-                style={{
-                  backgroundColor: '#3b82f6',
-                  color: 'white'
-                }}
-              >
-                ← Chương trước
-              </Link>
-            ) : (
-              <div></div>
-            )}
-          </div>
+        {/* Bottom Navigation */}
+        <div className="flex items-center justify-between mt-12 gap-4">
+          {prevChapter ? (
+            <Link
+              href={`/stories/${chapter.story.slug}/chapters/${prevChapter.slug}`}
+              className="flex items-center gap-3 px-6 py-4 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg"
+              style={{ backgroundColor: '#3b82f6', color: 'white' }}
+            >
+              <ChevronLeftIcon className="w-5 h-5" />
+              <span>Chương trước</span>
+            </Link>
+          ) : (
+            <div></div>
+          )}
 
           <div className="text-center">
-            <span
-              className="text-sm"
-              style={{ color: settings.textColor, opacity: 0.6 }}
-            >
-              Chương {chapter.chapter_number} / {chapter.story.title}
+            <span className="text-sm font-medium" style={{ color: settings.textColor, opacity: 0.6 }}>
+              Chương {chapter.chapter_number}
             </span>
           </div>
 
-          <div>
-            {nextChapter ? (
-              <Link
-                href={`/stories/${chapter.story.slug}/chapters/${nextChapter.slug}`}
-                className="inline-flex items-center px-6 py-3 rounded-lg transition-all hover:scale-105"
-                style={{
-                  backgroundColor: '#3b82f6',
-                  color: 'white'
-                }}
-              >
-                Chương tiếp →
-              </Link>
-            ) : (
-              <div></div>
-            )}
-          </div>
-        </nav>
+          {nextChapter ? (
+            <Link
+              href={`/stories/${chapter.story.slug}/chapters/${nextChapter.slug}`}
+              className="flex items-center gap-3 px-6 py-4 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg"
+              style={{ backgroundColor: '#3b82f6', color: 'white' }}
+            >
+              <span>Chương tiếp</span>
+              <ChevronRightIcon className="w-5 h-5" />
+            </Link>
+          ) : (
+            <div></div>
+          )}
+        </div>
       </main>
 
       {/* Reading Settings Button */}
       <button
         onClick={() => setIsSettingsOpen(true)}
-        className="fixed right-6 top-1/2 transform -translate-y-1/2 z-40 p-3 rounded-full shadow-lg transition-all hover:scale-110"
+        className="fixed right-6 top-1/2 transform -translate-y-1/2 z-40 p-4 rounded-full shadow-xl transition-all duration-200 hover:scale-110 border"
         style={{
           backgroundColor: settings.background,
           borderColor: settings.textColor + '30',
-          color: settings.textColor,
-          border: '1px solid'
+          color: settings.textColor
         }}
         title="Cài đặt đọc truyện"
       >
