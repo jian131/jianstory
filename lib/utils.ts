@@ -5,45 +5,32 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(date: string | Date) {
-  return new Intl.DateTimeFormat('vi-VN', {
+// Format date to Vietnamese
+export function formatDate(date: string | Date): string {
+  const d = new Date(date)
+  return d.toLocaleDateString('vi-VN', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric',
-  }).format(new Date(date))
+    day: 'numeric'
+  })
 }
 
-export function formatRelativeTime(date: string | Date) {
-  const now = new Date()
-  const targetDate = new Date(date)
-  const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000)
-
-  if (diffInSeconds < 60) {
-    return 'vừa xong'
-  } else if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60)
-    return `${minutes} phút trước`
-  } else if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600)
-    return `${hours} giờ trước`
-  } else if (diffInSeconds < 2592000) {
-    const days = Math.floor(diffInSeconds / 86400)
-    return `${days} ngày trước`
-  } else {
-    return formatDate(date)
-  }
+// Format reading time
+export function formatReadingTime(wordCount: number): string {
+  const wordsPerMinute = 200
+  const minutes = Math.ceil(wordCount / wordsPerMinute)
+  return `${minutes} phút đọc`
 }
 
-export function formatNumber(num: number) {
-  if (num >= 1000000) {
-    return `${(num / 1000000).toFixed(1)}M`
-  } else if (num >= 1000) {
-    return `${(num / 1000).toFixed(1)}K`
-  }
-  return num.toString()
+// Format view count
+export function formatViewCount(count: number): string {
+  if (count < 1000) return count.toString()
+  if (count < 1000000) return `${(count / 1000).toFixed(1)}K`
+  return `${(count / 1000000).toFixed(1)}M`
 }
 
-export function generateSlug(text: string) {
+// Slugify text for URL
+export function slugify(text: string): string {
   return text
     .toLowerCase()
     .trim()
@@ -52,37 +39,34 @@ export function generateSlug(text: string) {
     .replace(/^-+|-+$/g, '')
 }
 
-export function extractPlainText(html: string) {
-  return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+// Extract story ID from slug
+export function extractStoryId(slug: string): number | null {
+  const match = slug.match(/-(\d+)$/)
+  return match ? parseInt(match[1]) : null
 }
 
-export function truncateText(text: string, maxLength: number) {
-  if (text.length <= maxLength) return text
-  return text.substring(0, maxLength) + '...'
-}
+// Generate Cloudinary URL
+export function getCloudinaryUrl(publicId: string, options?: {
+  width?: number
+  height?: number
+  quality?: number
+  format?: string
+}): string {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+  if (!cloudName) return ''
 
-export function getStatusBadgeColor(status: string) {
-  switch (status) {
-    case 'ongoing':
-      return 'bg-green-100 text-green-800'
-    case 'completed':
-      return 'bg-blue-100 text-blue-800'
-    case 'hiatus':
-      return 'bg-yellow-100 text-yellow-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
+  const baseUrl = `https://res.cloudinary.com/${cloudName}/image/upload`
+
+  if (!options) {
+    return `${baseUrl}/${publicId}`
   }
-}
 
-export function getStatusText(status: string) {
-  switch (status) {
-    case 'ongoing':
-      return 'Đang tiến hành'
-    case 'completed':
-      return 'Hoàn thành'
-    case 'hiatus':
-      return 'Tạm dừng'
-    default:
-      return 'Không xác định'
-  }
+  const transformations = []
+  if (options.width) transformations.push(`w_${options.width}`)
+  if (options.height) transformations.push(`h_${options.height}`)
+  if (options.quality) transformations.push(`q_${options.quality}`)
+  if (options.format) transformations.push(`f_${options.format}`)
+
+  const transform = transformations.length > 0 ? `${transformations.join(',')}/` : ''
+  return `${baseUrl}/${transform}${publicId}`
 }

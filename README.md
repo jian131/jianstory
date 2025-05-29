@@ -1,252 +1,326 @@
-# 📚 JianStory - Web Đọc Truyện Online
+# 🏆 JianStory - Nền Tảng Đọc Truyện Hoàn Hảo
 
-Website đọc truyện online hoàn chỉnh được xây dựng với Next.js 14, Supabase, và Cloudinary.
+![JianStory Banner](./public/banner.png)
+
+**JianStory** là một nền tảng đọc truyện hiện đại được xây dựng với **Next.js 15**, **Supabase**, và **Tailwind CSS**. Hệ thống được thiết kế với **authentication**, **comment system**, **rating system**, và **role-based permissions**.
+
+## ✨ Tính Năng Chính
+
+### 🔐 **Authentication System**
+
+- ✅ Đăng ký/Đăng nhập với Supabase Auth
+- ✅ Email verification
+- ✅ Session management với SSR
+- ✅ Role-based permissions (admin, moderator, premium, user)
+
+### 💬 **Comment System**
+
+- ✅ Bình luận theo chapter và story
+- ✅ Hệ thống reply (trả lời bình luận)
+- ✅ Like/Unlike comments
+- ✅ Real-time notifications
+- ✅ Moderation tools cho admin/moderator
+
+### ⭐ **Rating System**
+
+- ✅ Đánh giá 5 sao cho stories
+- ✅ Viết review chi tiết
+- ✅ Tính toán rating trung bình tự động
+- ✅ Xem lịch sử đánh giá của user
+
+### 📚 **Story Management**
+
+- ✅ CRUD stories với rich text editor
+- ✅ Category system (Tiên Hiệp, Ngôn Tình, Kiếm Hiệp...)
+- ✅ Chapter management
+- ✅ Reading progress tracking
+- ✅ Bookmark system
+
+### 👥 **User Roles & Permissions**
+
+- **Admin**: Toàn quyền quản lý
+- **Moderator**: Quản lý content, moderate comments
+- **Premium**: Tính năng đặc biệt (đang phát triển)
+- **User**: Đọc, comment, rating
 
 ## 🚀 Tech Stack
 
-- **Frontend & Backend**: Next.js 14 (App Router)
-- **Database**: Supabase PostgreSQL
-- **Image Storage**: Cloudinary
+- **Frontend**: Next.js 15 (App Router), React 19, TypeScript
+- **Backend**: Supabase (PostgreSQL + Auth + RLS)
 - **Styling**: Tailwind CSS
-- **Hosting**: Vercel
-- **Authentication**: Supabase Auth
+- **UI Components**: Headless UI, Heroicons
+- **Auth**: Supabase Auth với SSR
+- **Database**: PostgreSQL với Row Level Security
 
-## 📋 Features
+## 🛠️ Setup & Installation
 
-### ✅ Chính
-
-- 🏠 Trang chủ với grid truyện và pagination
-- 📖 Trang chi tiết truyện với danh sách chapters
-- 📄 Trang đọc chapter với reading controls
-- 🔍 Tìm kiếm truyện theo tên, tác giả, thể loại
-- 👨‍💼 Admin panel quản lý truyện và chapters
-- 📱 Responsive design cho mobile và desktop
-
-### ✅ Phụ
-
-- 🔐 User authentication (login/register)
-- 📚 Lịch sử đọc cá nhân
-- ⭐ Rating và comment system
-- 📊 Reading progress tracking
-- 🌙 Dark/light theme toggle
-- 📤 Social sharing
-
-## 🛠️ Setup Instructions
-
-### 1. Clone Repository
+### 1. **Clone Repository**
 
 ```bash
-git clone https://github.com/jian131/jianstory.git
+git clone https://github.com/yourusername/jianstory.git
 cd jianstory
 npm install
 ```
 
-### 2. Setup Supabase
+### 2. **Setup Supabase**
 
-#### Tạo Project
+#### a) Tạo Supabase Project
 
-1. Đi đến [supabase.com](https://supabase.com)
-2. Tạo account và new project
-3. Chọn region gần nhất (Singapore cho VN)
-4. Đợi project được tạo
+1. Truy cập [supabase.com](https://supabase.com)
+2. Tạo project mới: `jianstory-db`
+3. Chọn region: `Southeast Asia (Singapore)`
 
-#### Setup Database
+#### b) Lấy Credentials
 
-1. Vào **SQL Editor** trong Supabase dashboard
-2. Copy nội dung file `database/schema.sql`
-3. Paste và chạy để tạo tables và policies
-
-#### Lấy API Keys
-
-1. Vào **Settings** > **API**
+1. Vào **Settings > API**
 2. Copy:
-   - `Project URL`
-   - `anon public key`
-   - `service_role key` (chỉ dùng server-side)
+   - **Project URL**: `https://xxx.supabase.co`
+   - **anon public key**: `eyJhbGc...`
+   - **service_role key**: `eyJhbGc...`
 
-### 3. Setup Cloudinary
+#### c) Setup Database Schema
 
-#### Tạo Account
+1. Vào **SQL Editor**
+2. Copy nội dung file `database/schema.sql`
+3. Paste và **Run** để tạo tables
 
-1. Đi đến [cloudinary.com](https://cloudinary.com)
-2. Đăng ký free account (25GB storage)
-3. Vào **Dashboard**
-
-#### Lấy Credentials
-
-1. Copy:
-   - `Cloud name`
-   - `API Key`
-   - `API Secret`
-
-### 4. Environment Variables
+### 3. **Environment Variables**
 
 Tạo file `.env.local`:
 
-```bash
-# Database
+```env
+# Supabase - Thay bằng credentials của bạn
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# Image Storage
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+# Admin email - thay bằng email của bạn
+ADMIN_EMAILS=your-email@gmail.com
 
 # Next.js
-NEXTAUTH_SECRET=your_random_secret_string
+NEXTAUTH_SECRET=your-secret-key-here
 NEXTAUTH_URL=http://localhost:3000
-
-# Admin
-ADMIN_EMAILS=your_admin_email@example.com
 ```
 
-### 5. Development
+### 4. **Seed Sample Data**
 
 ```bash
-# Chạy development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
+npm run seed
 ```
 
-### 6. Deploy to Vercel
+### 5. **Run Development Server**
 
-#### Setup Vercel
+```bash
+npm run dev
+```
 
-1. Đi đến [vercel.com](https://vercel.com)
-2. Connect GitHub account
-3. Import repository `jianstory`
-4. Thêm environment variables từ `.env.local`
-5. Deploy!
+Truy cập: http://localhost:3000
 
-#### Custom Domain (.eu.org)
+## 📊 Database Schema
 
-1. Đăng ký domain miễn phí tại [nic.eu.org](https://nic.eu.org)
-2. Trong Vercel dashboard > Domains
-3. Thêm custom domain
-4. Update DNS records theo hướng dẫn Vercel
+### **Core Tables**
 
-## 📁 Project Structure
+- `profiles` - User profiles với roles
+- `authors` - Tác giả truyện
+- `categories` - Thể loại truyện
+- `stories` - Truyện với metadata
+- `chapters` - Chương truyện
+
+### **User Interaction**
+
+- `reading_progress` - Tiến độ đọc
+- `bookmarks` - Đánh dấu yêu thích
+- `story_ratings` - Đánh giá & review
+- `story_likes` / `chapter_likes` - Like system
+
+### **Comment System**
+
+- `story_comments` - Bình luận truyện
+- `chapter_comments` - Bình luận chương
+- `comment_likes` - Like comment
+
+### **Admin System**
+
+- `notifications` - Thông báo
+- `moderation_logs` - Log moderation
+
+## 🎯 User Roles
+
+| Role          | Permissions                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| **Admin**     | • Toàn quyền quản lý<br>• CRUD stories/chapters<br>• User management<br>• Moderate comments |
+| **Moderator** | • Moderate comments<br>• Hide/delete inappropriate content<br>• View moderation logs        |
+| **Premium**   | • Ad-free experience<br>• Early access features<br>• Priority support                       |
+| **User**      | • Đọc truyện<br>• Comment & rating<br>• Bookmark<br>• Reading progress                      |
+
+## 🔧 API Endpoints
+
+### **Authentication**
+
+- `POST /api/auth/login` - Đăng nhập
+- `POST /api/auth/register` - Đăng ký
+- `POST /api/auth/logout` - Đăng xuất
+
+### **Stories**
+
+- `GET /api/stories` - Danh sách truyện
+- `GET /api/stories/[slug]` - Chi tiết truyện
+- `POST /api/stories` - Tạo truyện (admin)
+
+### **Comments**
+
+- `GET /api/comments/story/[id]` - Comments của truyện
+- `GET /api/comments/chapter/[id]` - Comments của chương
+- `POST /api/comments` - Tạo comment
+- `PUT /api/comments/[id]` - Update comment
+
+### **Ratings**
+
+- `GET /api/ratings/[storyId]` - Ratings của truyện
+- `POST /api/ratings` - Đánh giá truyện
+- `PUT /api/ratings/[id]` - Update rating
+
+## 🎨 UI Components
+
+### **Core Components**
+
+- `CommentSection` - Hệ thống comment đầy đủ
+- `RatingSystem` - Rating 5 sao với review
+- `StoryCard` - Card hiển thị truyện
+- `ChapterList` - Danh sách chương
+
+### **Auth Components**
+
+- `LoginForm` - Form đăng nhập
+- `RegisterForm` - Form đăng ký
+- `UserProfile` - Profile user
+
+### **Admin Components**
+
+- `AdminDashboard` - Dashboard quản trị
+- `ModerationPanel` - Panel moderation
+- `UserManagement` - Quản lý user
+
+## 🚧 Development
+
+### **Folder Structure**
 
 ```
 jianstory/
 ├── src/
-│   ├── app/                 # Next.js 14 App Router
-│   │   ├── globals.css      # Global styles
-│   │   ├── layout.tsx       # Root layout
-│   │   ├── page.tsx         # Homepage
-│   │   ├── stories/         # Story pages
-│   │   ├── read/           # Chapter reader
-│   │   └── admin/          # Admin panel
-│   └── components/         # Reusable components
-├── lib/                    # Utilities and configs
-│   ├── supabase.ts        # Supabase client setup
-│   └── utils.ts           # Helper functions
-├── database/              # Database schemas
-├── scripts/              # Crawler scripts
-└── public/               # Static assets
+│   ├── app/           # Next.js App Router
+│   ├── components/    # React Components
+│   ├── hooks/         # Custom Hooks
+│   ├── lib/           # Utilities & Config
+│   └── types/         # TypeScript Types
+├── database/          # Database Schema
+├── scripts/           # Seed & Import Scripts
+└── public/           # Static Assets
 ```
 
-## 🔧 Usage
+### **Code Standards**
 
-### Crawl Data từ TruyenFull
+- **TypeScript** cho type safety
+- **ESLint + Prettier** cho code formatting
+- **Tailwind CSS** cho styling
+- **Conventional Commits** cho git messages
+
+### **Database Migration**
 
 ```bash
-# Chạy crawler script
-cd scripts
-python truyenfull_final_perfect.py
+# Chạy migration mới
+npm run db:migrate
 
-# Import data vào Supabase (sẽ có script import riêng)
+# Reset database
+npm run db:reset
+
+# Seed data
+npm run seed
 ```
 
-### Admin Functions
+## 🔒 Security Features
 
-1. Đăng nhập với email admin
-2. Vào `/admin` để quản lý:
-   - Upload/edit stories
-   - Manage chapters
-   - User management
-   - View analytics
+### **Row Level Security (RLS)**
 
-### User Features
+- Users chỉ có thể xem/edit profile của mình
+- Comments được filter theo status
+- Admin có quyền truy cập mọi data
 
-- **Đăng ký/Đăng nhập**: Supabase Auth
-- **Đọc truyện**: Reading interface với controls
-- **Lịch sử**: Automatic progress tracking
-- **Rating/Comment**: Interactive features
+### **Authentication Security**
 
-## 🔐 Security
+- JWT tokens với auto-refresh
+- Server-side session validation
+- CSRF protection với middleware
 
-- Row Level Security (RLS) enabled
-- API keys trong environment variables
-- Admin role-based access control
-- Input validation và sanitization
+### **Content Moderation**
 
-## 📊 Performance
+- Auto-hide reported comments
+- Moderation logs tracking
+- Spam detection (đang phát triển)
 
-- Next.js optimization (SSG, ISR)
-- Image optimization với Cloudinary
-- Database indexing
-- Lazy loading
-- Caching strategies
+## 📈 Performance
 
-## 🚀 Scaling
+### **Optimizations**
 
-### Free Tier Limits
+- **Server-side rendering** cho SEO
+- **Incremental Static Regeneration** cho content
+- **Database indexing** cho queries
+- **Image optimization** với Next.js
 
-- **Supabase**: 500MB database, 2GB bandwidth/month
-- **Cloudinary**: 25GB storage, 25GB bandwidth/month
-- **Vercel**: 100GB bandwidth/month
+### **Caching Strategy**
 
-### Optimization Tips
+- Supabase built-in caching
+- Next.js automatic caching
+- Browser caching headers
 
-- Optimize images với Cloudinary transformations
-- Use Next.js caching
-- Implement pagination
-- Monitor usage trong dashboards
+## 🧪 Testing
 
-## 🐛 Troubleshooting
+```bash
+# Unit tests
+npm run test
 
-### Common Issues
+# E2E tests
+npm run test:e2e
 
-1. **Database Connection Error**
+# Linting
+npm run lint
+```
 
-   - Kiểm tra SUPABASE_URL và ANON_KEY
-   - Verify RLS policies
+## 🚀 Deployment
 
-2. **Image Upload Failed**
+### **Vercel (Recommended)**
 
-   - Check Cloudinary credentials
-   - Verify upload presets
+1. Connect GitHub repository
+2. Set environment variables
+3. Deploy automatically
 
-3. **Build Errors**
-   - Clear `.next` folder: `rm -rf .next`
-   - Reinstall: `rm -rf node_modules && npm install`
+### **Manual Deployment**
 
-### Support
+```bash
+npm run build
+npm start
+```
 
-- GitHub Issues: [Create Issue](https://github.com/jian131/jianstory/issues)
-- Email: your_email@example.com
+## 🤝 Contributing
 
-## 📈 Roadmap
+1. Fork repository
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push branch: `git push origin feature/amazing-feature`
+5. Open Pull Request
 
-- [ ] Mobile app với React Native
-- [ ] Advanced search filters
-- [ ] Recommendation system
-- [ ] Social features (follow authors)
-- [ ] Multiple language support
-- [ ] Offline reading mode
+## 📝 License
 
-## 📄 License
+MIT License - xem file [LICENSE](LICENSE) để biết chi tiết.
 
-MIT License - see LICENSE file for details
+## 📞 Support
+
+- **Email**: support@jianstory.com
+- **Discord**: [JianStory Community](https://discord.gg/jianstory)
+- **Docs**: [docs.jianstory.com](https://docs.jianstory.com)
 
 ---
 
-⭐ **Star this repo if you find it helpful!**
+**Built with ❤️ by JianStory Team**
+
+⭐ **Star repo này nếu project hữu ích!**
